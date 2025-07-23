@@ -24,7 +24,7 @@
       border-radius: 16px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
       width: 90%;
-      max-width:300px;
+      max-width: 300px;
       text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       animation: floatCard 1s ease-in-out forwards;
@@ -93,10 +93,15 @@
     }
 
     function payNow() {
-      const email = getQueryParam("email") || "test@example.com";
-      const amount = parseInt(getQueryParam("amount")) * 100 || 10000; // in pesewas
-      const name = getQueryParam("name") || "Anonymous";
+      const email = getQueryParam("email");
+      const amount = parseInt(getQueryParam("amount")); // Already in pesewas (no * 100)
+      const name = getQueryParam("name");
       const reference = getQueryParam("reference") || "REF" + Date.now();
+
+      if (!email || !amount || !name || !reference) {
+        alert("Missing payment parameters. Please try again.");
+        return;
+      }
 
       const handler = PaystackPop.setup({
         key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e',
@@ -114,8 +119,8 @@
           ]
         },
         callback: function(response) {
-          console.log("Payment complete. Reference:", response.reference);
-          // ❗No redirect. FlutterFlow periodic action will handle this.
+          console.log("✅ Payment complete. Reference:", response.reference);
+          // No redirect needed; FlutterFlow will monitor Firestore or verify via API
         },
         onClose: function() {
           alert("Payment was cancelled.");
