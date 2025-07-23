@@ -58,16 +58,16 @@
 
     function payNow() {
       const email = getQueryParam("email") || "test@example.com";
-      const amount = parseInt(getQueryParam("amount")) * 100 || 10000; // Kobo
+      const amount = parseInt(getQueryParam("amount")) * 100 || 10000; // GHS to pesewas
       const name = getQueryParam("name") || "Anonymous";
       const reference = getQueryParam("reference") || "REF" + Date.now();
 
       var handler = PaystackPop.setup({
-        key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e', // 
+        key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e', // Replace with your actual key
         email: email,
         amount: amount,
-        ref: reference,
         currency: 'GHS',
+        ref: reference,
         metadata: {
           custom_fields: [
             {
@@ -78,11 +78,11 @@
           ]
         },
         callback: function(response) {
-          // ✅ You can change this to a custom success page if needed
-          window.location.href = "https://kiyu-hub.github.io/paystack-inline/success.html";
+          // ✅ Redirect to success page with reference
+          window.location.href = `https://kiyu-hub.github.io/paystack-inline/success.html?reference=${response.reference}`;
         },
         onClose: function() {
-          alert("Transaction was cancelled.");
+          alert("Payment cancelled");
         }
       });
       handler.openIframe();
