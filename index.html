@@ -1,45 +1,389 @@
-<script>
-  function getQueryParam(key) {
-    const url = new URL(window.location.href);
-    return url.searchParams.get(key);
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment</title>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .payment-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .payment-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00c851, #007bff);
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: url('paystack-logo.png') center/contain no-repeat;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #00C851;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .payment-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .detail-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .amount {
+            font-size: 18px;
+            color: #00c851;
+            font-weight: 700;
+        }
+        
+        .pay-button {
+            background: linear-gradient(135deg, #00c851, #007bff);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 200, 81, 0.3);
+        }
+        
+        .pay-button:active {
+            transform: translateY(0);
+        }
+        
+        .pay-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loading {
+            display: none;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .security-badge::before {
+            content: '🔒';
+            margin-right: 4px;
+        }
+        
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="logo"></div>
+        <h1>Complete Payment</h1>
+        <p class="subtitle">Secure payment powered by Paystack</p>
+        
+        <div class="payment-details">
+            <div class="detail-row">
+                <span class="detail-label">Customer</span>
+                <span class="detail-value" id="customerName">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="customerEmail">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Reference</span>
+                <span class="detail-value" id="orderRef">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Total Amount</span>
+                <span class="detail-value amount" id="totalAmount">Loading...</span>
+            </div>
+        </div>
+        
+        <button class="pay-button" id="payButton" onclick="initiatePayment()">
+            Pay Now
+        </button>
+        
+        <div class="loading" id="loadingMessage">
+            <div class="spinner"></div>
+            Processing payment...
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            <strong>Payment Successful!</strong><br>
+            Your transaction has been completed successfully.
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            <strong>Payment Failed!</strong><br>
+            <span id="errorText">Please try again or contact support.</span>
+        </div>
+        
+        <div class="security-badge">
+            Secured by Paystack SSL encryption
+        </div>
+    </div>
 
-  function payNow() {
-    const email = getQueryParam("email");
-    const amount = parseInt(getQueryParam("amount")); // Already multiplied by 100
-    const name = getQueryParam("name");
-    const reference = getQueryParam("reference"); // <- This will be orderRefId from FlutterFlow
+    <script>
+        // Extract parameters from URL
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                name: params.get('name') || 'Customer',
+                email: params.get('email') || '',
+                amount: params.get('amount') || '0',
+                reference: params.get('reference') || 'REF_' + Date.now()
+            };
+        }
 
-    // Check that all values are available
-    if (!email || !amount || !name || !reference) {
-      alert("Missing payment details. Please try again.");
-      return;
-    }
+        // Initialize page with parameters
+        function initializePage() {
+            const params = getUrlParams();
+            
+            // Validate required parameters
+            if (!params.email || !params.amount || params.amount === '0') {
+                showError('Invalid payment parameters. Please try again.');
+                document.getElementById('payButton').disabled = true;
+                return;
+            }
 
-    const handler = PaystackPop.setup({
-      key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e',
-      email: email,
-      amount: amount,
-      currency: 'GHS',
-      ref: reference,
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Customer Name",
-            variable_name: "customer_name",
-            value: name
-          }
-        ]
-      },
-      callback: function(response) {
-        console.log("✅ Payment complete. Reference:", response.reference);
-        // Firestore check will handle the next steps
-      },
-      onClose: function() {
-        alert("Payment was cancelled.");
-      }
-    });
+            // Update UI with parameters
+            document.getElementById('customerName').textContent = params.name;
+            document.getElementById('customerEmail').textContent = params.email;
+            document.getElementById('orderRef').textContent = params.reference;
+            document.getElementById('totalAmount').textContent = `GH₵${parseInt(params.amount / 100).toLocaleString()}`;
+            
+            // Store params globally
+            window.paymentParams = params;
+        }
 
-    handler.openIframe();
-  }
-</script>
+        // Show loading state
+        function showLoading() {
+            document.getElementById('payButton').style.display = 'none';
+            document.getElementById('loadingMessage').style.display = 'block';
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            document.getElementById('payButton').style.display = 'block';
+            document.getElementById('loadingMessage').style.display = 'none';
+        }
+
+        // Show success message
+        function showSuccess() {
+            hideLoading();
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('payButton').style.display = 'none';
+        }
+
+        // Show error message
+        function showError(message) {
+            hideLoading();
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorText').textContent = message;
+        }
+
+        // Initiate Paystack payment
+        function initiatePayment() {
+            const params = window.paymentParams;
+            
+            if (!params) {
+                showError('Payment parameters not loaded. Please refresh and try again.');
+                return;
+            }
+
+            showLoading();
+
+            // Initialize Paystack payment
+            const handler = PaystackPop.setup({
+                key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e',
+                email: params.email,
+                amount: parseInt(params.amount), // Amount in pesewas
+                currency: 'GHS',
+                ref: params.reference,
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Customer Name",
+                            variable_name: "customer_name",
+                            value: params.name
+                        }
+                    ]
+                },
+                callback: function(response) {
+                    // Payment successful
+                    console.log('Payment successful:', response);
+                    showSuccess();
+                    
+                    // Notify parent window (FlutterFlow WebView)
+                    if (window.parent && window.parent.postMessage) {
+                        window.parent.postMessage({
+                            type: 'PAYMENT_SUCCESS',
+                            reference: response.reference,
+                            status: 'success'
+                        }, '*');
+                    }
+                },
+                onClose: function() {
+                    // Payment cancelled or closed
+                    hideLoading();
+                    
+                    // Notify parent window
+                    if (window.parent && window.parent.postMessage) {
+                        window.parent.postMessage({
+                            type: 'PAYMENT_CANCELLED',
+                            reference: params.reference,
+                            status: 'cancelled'
+                        }, '*');
+                    }
+                }
+            });
+
+            // Open payment modal
+            handler.openIframe();
+        }
+
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializePage);
+
+        // Handle messages from parent window (optional)
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'INIT_PAYMENT') {
+                initiatePayment();
+            }
+        });
+    </script>
+</body>
+</html>
