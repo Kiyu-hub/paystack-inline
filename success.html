@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment Successful</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f3f9f4;
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .checkmark {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 6px solid #0aa83f;
+      box-shadow: 0 0 0 4px #e1f5e7;
+      position: relative;
+      animation: popIn 0.6s ease-out forwards;
+    }
+
+    .checkmark::after {
+      content: '';
+      position: absolute;
+      left: 26px;
+      top: 45px;
+      width: 25px;
+      height: 12px;
+      border: solid #0aa83f;
+      border-width: 0 0 6px 6px;
+      transform: rotate(-45deg);
+      animation: drawCheck 0.4s 0.6s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes drawCheck {
+      0% { width: 0; height: 0; opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    h1 {
+      color: #0aa83f;
+      margin-top: 30px;
+      font-size: 28px;
+    }
+
+    p {
+      color: #555;
+      font-size: 16px;
+      margin: 10px 0 30px;
+    }
+
+    button {
+      background-color: #0aa83f;
+      border: none;
+      color: white;
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #089236;
+    }
+  </style>
+</head>
+<body>
+  <div class="checkmark"></div>
+  <h1>Payment Successful</h1>
+  <p>Thank you for your payment. Your transaction was successful.</p>
+   </body>
+</html>
