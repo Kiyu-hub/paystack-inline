@@ -7,43 +7,79 @@
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
     body {
-      background: #f9f9f9;
-      font-family: "Segoe UI", sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
-    .container {
+
+    .card {
       background: white;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
+      padding: 32px 24px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
       width: 90%;
       max-width: 400px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: floatCard 1s ease-in-out forwards;
     }
-    img {
-      width: 100px;
+
+    @keyframes floatCard {
+      0% {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .card img {
+      width: 80px;
       margin-bottom: 20px;
     }
-    h2 {
-      margin-bottom: 10px;
+
+    .card h2 {
+      margin: 12px 0 8px;
+      font-size: 22px;
     }
-    button {
+
+    .card p {
+      color: #444;
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    .card button {
       background-color: #0aa83f;
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 14px 28px;
       font-size: 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .card button:hover {
+      background-color: #089136;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="card">
     <img src="https://raw.githubusercontent.com/kiyu-hub/paystack-inline/main/paystack-logo.png" alt="Paystack">
     <h2>Proceed to Pay</h2>
     <p>Click the button below to complete your secure payment.</p>
@@ -58,12 +94,12 @@
 
     function payNow() {
       const email = getQueryParam("email") || "test@example.com";
-      const amount = parseInt(getQueryParam("amount")) * 100 || 10000; // GHS to pesewas
+      const amount = parseInt(getQueryParam("amount")) * 100 || 10000; // in pesewas
       const name = getQueryParam("name") || "Anonymous";
       const reference = getQueryParam("reference") || "REF" + Date.now();
 
-      var handler = PaystackPop.setup({
-        key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e', // Replace with your actual key
+      const handler = PaystackPop.setup({
+        key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e',
         email: email,
         amount: amount,
         currency: 'GHS',
@@ -78,13 +114,14 @@
           ]
         },
         callback: function(response) {
-          // ✅ Redirect to success page with reference
-          window.location.href = `https://kiyu-hub.github.io/paystack-inline/success.html?reference=${response.reference}`;
+          console.log("Payment complete. Reference:", response.reference);
+          // ❗No redirect. FlutterFlow periodic action will handle this.
         },
         onClose: function() {
-          alert("Payment cancelled");
+          alert("Payment was cancelled.");
         }
       });
+
       handler.openIframe();
     }
   </script>
