@@ -1,134 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Secure Payment</title>
-  <script src="https://js.paystack.co/v1/inline.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
+<script>
+  function getQueryParam(key) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(key);
+  }
+
+  function payNow() {
+    const email = getQueryParam("email");
+    const amount = parseInt(getQueryParam("amount")); // Already multiplied by 100
+    const name = getQueryParam("name");
+    const reference = getQueryParam("reference"); // <- This will be orderRefId from FlutterFlow
+
+    // Check that all values are available
+    if (!email || !amount || !name || !reference) {
+      alert("Missing payment details. Please try again.");
+      return;
     }
 
-    .card {
-      background: white;
-      padding: 40px 24px;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      width: 90%;
-      max-width: 300px;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: floatCard 1s ease-in-out forwards;
-    }
-
-    @keyframes floatCard {
-      0% {
-        transform: translateY(30px);
-        opacity: 0;
+    const handler = PaystackPop.setup({
+      key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e',
+      email: email,
+      amount: amount,
+      currency: 'GHS',
+      ref: reference,
+      metadata: {
+        custom_fields: [
+          {
+            display_name: "Customer Name",
+            variable_name: "customer_name",
+            value: name
+          }
+        ]
+      },
+      callback: function(response) {
+        console.log("✅ Payment complete. Reference:", response.reference);
+        // Firestore check will handle the next steps
+      },
+      onClose: function() {
+        alert("Payment was cancelled.");
       }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
+    });
 
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-    }
-
-    .card img {
-      width: 80px;
-      margin-bottom: 20px;
-    }
-
-    .card h2 {
-      margin: 12px 0 8px;
-      font-size: 22px;
-    }
-
-    .card p {
-      color: #444;
-      font-size: 15px;
-      margin-bottom: 24px;
-    }
-
-    .card button {
-      background-color: #0aa83f;
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .card button:hover {
-      background-color: #089136;
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <img src="https://raw.githubusercontent.com/kiyu-hub/paystack-inline/main/paystack-logo.png" alt="Paystack">
-    <h2>Proceed to Pay</h2>
-    <p>Click the button below to complete your secure payment.</p>
-    <button onclick="payNow()">Pay Now</button>
-  </div>
-
-  <script>
-    function getQueryParam(key) {
-      const url = new URL(window.location.href);
-      return url.searchParams.get(key);
-    }
-
-    function payNow() {
-      const email = getQueryParam("email");
-      const amount = parseInt(getQueryParam("amount")); // Already in pesewas (no * 100)
-      const name = getQueryParam("name");
-      const reference = getQueryParam("reference") || "REF" + Date.now();
-
-      if (!email || !amount || !name || !reference) {
-        alert("Missing payment parameters. Please try again.");
-        return;
-      }
-
-      const handler = PaystackPop.setup({
-        key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e',
-        email: email,
-        amount: amount,
-        currency: 'GHS',
-        ref: reference,
-        metadata: {
-          custom_fields: [
-            {
-              display_name: "Customer Name",
-              variable_name: "customer_name",
-              value: name
-            }
-          ]
-        },
-        callback: function(response) {
-          console.log("✅ Payment complete. Reference:", response.reference);
-          // No redirect needed; FlutterFlow will monitor Firestore or verify via API
-        },
-        onClose: function() {
-          alert("Payment was cancelled.");
-        }
-      });
-
-      handler.openIframe();
-    }
-  </script>
-</body>
-</html>
+    handler.openIframe();
+  }
+</script>
