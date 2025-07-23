@@ -1,94 +1,88 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Secure Payment | Paystack</title>
+  <title>Secure Payment</title>
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f6f8;
+      background: #f9f9f9;
+      font-family: "Segoe UI", sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
-
-    .card {
-      background: #ffffff;
-      padding: 2rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      border-radius: 14px;
-      max-width: 400px;
-      width: 100%;
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: center;
+      width: 90%;
+      max-width: 400px;
     }
-
-    .logo {
-      width: 140px;
-      margin-bottom: 1.5rem;
+    img {
+      width: 100px;
+      margin-bottom: 20px;
     }
-
     h2 {
-      margin-bottom: 1rem;
-      color: #101828;
+      margin-bottom: 10px;
     }
-
-    p {
-      margin-bottom: 2rem;
-      color: #475467;
-      font-size: 0.95rem;
-    }
-
     button {
-      padding: 12px 20px;
       background-color: #0aa83f;
-      border: none;
       color: white;
-      font-size: 1rem;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      width: 100%;
-    }
-
-    button:hover {
-      background-color: #089136;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Paystack_Logo.png/320px-Paystack_Logo.png" class="logo" alt="Paystack Logo"/>
-    <h2>Complete Your Payment</h2>
-    <p>You’re about to make a secure payment with Paystack. Please proceed by clicking the button below.</p>
-    <button onclick="payWithPaystack()">Pay Now</button>
+  <div class="container">
+    <img src="https://raw.githubusercontent.com/kiyu-hub/paystack-inline/main/paystack-logo.png" alt="Paystack">
+    <h2>Proceed to Pay</h2>
+    <p>Click the button below to complete your secure payment.</p>
+    <button onclick="payNow()">Pay Now</button>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get("email");
-    const amount = parseInt(params.get("amount"));
+    function getQueryParam(key) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(key);
+    }
 
-    function payWithPaystack() {
-      if (!email || !amount) {
-        alert("Missing payment information.");
-        return;
-      }
+    function payNow() {
+      const email = getQueryParam("email") || "test@example.com";
+      const amount = parseInt(getQueryParam("amount")) * 100 || 10000; // Kobo
+      const name = getQueryParam("name") || "Anonymous";
+      const reference = getQueryParam("reference") || "REF" + Date.now();
 
       var handler = PaystackPop.setup({
-        key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e', // Replace with your actual test or live public key
+        key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e', // 
         email: email,
-        amount: amount, // amount in kobo
-        currency: 'GHS',
+        amount: amount,
+        ref: reference,
+        currency: 'GHC',
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Customer Name",
+              variable_name: "customer_name",
+              value: name
+            }
+          ]
+        },
         callback: function(response) {
-          alert('Payment complete! Reference: ' + response.reference);
+          // ✅ You can change this to a custom success page if needed
+          window.location.href = "https://kiyu-hub.github.io/paystack-inline/success.html";
         },
         onClose: function() {
-          alert('Transaction was closed.');
+          alert("Transaction was cancelled.");
         }
       });
       handler.openIframe();
