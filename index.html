@@ -3,387 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Payment</title>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <title>Payment Verification - Please Wait</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            overflow: hidden;
         }
-        
-        .payment-container {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
+
+        .verification-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 60px 40px;
             text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 480px;
+            width: 90%;
             position: relative;
             overflow: hidden;
         }
-        
-        .payment-container::before {
+
+        .verification-container::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #00c851, #007bff);
+            background: linear-gradient(90deg, #00C896, #1BA0E1);
+            animation: progressBar 3s ease-in-out infinite;
         }
-        
-        .logo {
-            width: 60px;
-            height: 60px;
-            background: url('paystack-logo.png') center/contain no-repeat;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #00C851;
+
+        @keyframes progressBar {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0%); }
+            100% { transform: translateX(100%); }
         }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 24px;
-            font-weight: 600;
+
+        .paystack-logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 40px;
+            animation: logoFloat 3s ease-in-out infinite;
         }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
-        
-        .payment-details {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: left;
-        }
-        
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .detail-row:last-child {
-            border-bottom: none;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .detail-label {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .detail-value {
-            color: #333;
-            font-weight: 500;
-        }
-        
-        .amount {
-            font-size: 18px;
-            color: #00c851;
-            font-weight: 700;
-        }
-        
-        .pay-button {
-            background: linear-gradient(135deg, #00c851, #007bff);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
+
+        .verification-icon {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto 30px;
             position: relative;
-            overflow: hidden;
         }
-        
-        .pay-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 200, 81, 0.3);
+
+        .shield-icon {
+            width: 100%;
+            height: 100%;
+            fill: #00C896;
+            animation: pulse 2s ease-in-out infinite;
         }
-        
-        .pay-button:active {
-            transform: translateY(0);
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
         }
-        
-        .pay-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+
+        .checkmark-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
         }
-        
-        .loading {
-            display: none;
-            margin-top: 20px;
-            color: #666;
+
+        .checkmark {
+            stroke: #ffffff;
+            stroke-width: 3;
+            fill: none;
+            animation: checkmarkDraw 2s ease-in-out infinite;
+        }
+
+        @keyframes checkmarkDraw {
+            0% { stroke-dasharray: 0, 50; }
+            50% { stroke-dasharray: 25, 25; }
+            100% { stroke-dasharray: 50, 0; }
+        }
+
+        .verification-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .verification-subtitle {
+            font-size: 16px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00C896;
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 60%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            30% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+
+        .status-text {
             font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
         }
-        
-        .spinner {
-            display: inline-block;
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 200, 150, 0.1);
+            color: #00C896;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .lock-icon {
             width: 16px;
             height: 16px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
+            fill: currentColor;
+        }
+
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 200, 150, 0.3);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
+            animation: floatUp 8s ease-in-out infinite;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 6s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 7s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 1.5s; }
+
+        @keyframes floatUp {
+            0% {
+                bottom: -10px;
+                opacity: 0;
+                transform: translateX(0px) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 100%;
+                opacity: 0;
+                transform: translateX(30px) scale(0);
+            }
         }
-        
-        .success-message {
-            display: none;
-            background: #d4edda;
-            color: #155724;
-            padding: 16px;
-            border-radius: 12px;
-            margin-top: 20px;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .error-message {
-            display: none;
-            background: #f8d7da;
-            color: #721c24;
-            padding: 16px;
-            border-radius: 12px;
-            margin-top: 20px;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .security-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-        
-        .security-badge::before {
-            content: '🔒';
-            margin-right: 4px;
-        }
-        
+
         @media (max-width: 480px) {
-            .payment-container {
-                padding: 30px 20px;
-                margin: 10px;
+            .verification-container {
+                padding: 40px 24px;
+                margin: 20px;
             }
             
-            h1 {
-                font-size: 20px;
+            .paystack-logo {
+                width: 150px;
+            }
+            
+            .verification-title {
+                font-size: 24px;
+            }
+            
+            .verification-icon {
+                width: 100px;
+                height: 100px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="payment-container">
-        <div class="logo"></div>
-        <h1>Complete Payment</h1>
-        <p class="subtitle">Secure payment powered by Paystack</p>
+    <div class="verification-container">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
+        <img src="paystack-logo.png" alt="Paystack" class="paystack-logo">
         
-        <div class="payment-details">
-            <div class="detail-row">
-                <span class="detail-label">Customer</span>
-                <span class="detail-value" id="customerName">Loading...</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Email</span>
-                <span class="detail-value" id="customerEmail">Loading...</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Reference</span>
-                <span class="detail-value" id="orderRef">Loading...</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Total Amount</span>
-                <span class="detail-value amount" id="totalAmount">Loading...</span>
+        <div class="verification-icon">
+            <svg class="shield-icon" viewBox="0 0 24 24">
+                <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11.5C15.4,11.5 16,12.4 16,13V16C16,17.4 15.4,18 14.8,18H9.2C8.6,18 8,17.4 8,16V13C8,12.4 8.6,11.5 9.2,11.5V10C9.2,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,10V11.5H13.5V10C13.5,8.7 12.8,8.2 12,8.2Z"/>
+            </svg>
+            <div class="checkmark-circle">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <path class="checkmark" d="M10 20 L16 26 L30 12"/>
+                </svg>
             </div>
         </div>
-        
-        <button class="pay-button" id="payButton" onclick="initiatePayment()">
-            Pay Now
-        </button>
-        
-        <div class="loading" id="loadingMessage">
-            <div class="spinner"></div>
-            Processing payment...
+
+        <h1 class="verification-title">Verifying Payment</h1>
+        <p class="verification-subtitle">Please wait while we securely process and verify your payment. This usually takes just a few moments.</p>
+
+        <div class="loading-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
         </div>
-        
-        <div class="success-message" id="successMessage">
-            <strong>Payment Successful!</strong><br>
-            Your transaction has been completed successfully.
-        </div>
-        
-        <div class="error-message" id="errorMessage">
-            <strong>Payment Failed!</strong><br>
-            <span id="errorText">Please try again or contact support.</span>
-        </div>
-        
+
+        <p class="status-text">Processing your transaction securely...</p>
+
         <div class="security-badge">
-            Secured by Paystack SSL encryption
+            <svg class="lock-icon" viewBox="0 0 24 24">
+                <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/>
+            </svg>
+            256-bit SSL Encrypted
         </div>
     </div>
 
     <script>
-        // Extract parameters from URL
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                name: params.get('name') || 'Customer',
-                email: params.get('email') || '',
-                amount: params.get('amount') || '0',
-                reference: params.get('reference') || 'REF_' + Date.now()
-            };
+        // Add dynamic status messages
+        const statusMessages = [
+            "Processing your transaction securely...",
+            "Validating payment details...",
+            "Confirming with your bank...",
+            "Almost done, please wait...",
+            "Finalizing verification..."
+        ];
+
+        let messageIndex = 0;
+        const statusElement = document.querySelector('.status-text');
+
+        function updateStatus() {
+            statusElement.style.opacity = '0';
+            setTimeout(() => {
+                statusElement.textContent = statusMessages[messageIndex];
+                statusElement.style.opacity = '1';
+                messageIndex = (messageIndex + 1) % statusMessages.length;
+            }, 300);
         }
 
-        // Initialize page with parameters
-        function initializePage() {
-            const params = getUrlParams();
+        // Change status message every 3 seconds
+        setInterval(updateStatus, 3000);
+
+        // Add entrance animation delay
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.verification-container');
+            container.style.transform = 'translateY(20px)';
+            container.style.opacity = '0';
             
-            // Validate required parameters
-            if (!params.email || !params.amount || params.amount === '0') {
-                showError('Invalid payment parameters. Please try again.');
-                document.getElementById('payButton').disabled = true;
-                return;
-            }
-
-            // Update UI with parameters
-            document.getElementById('customerName').textContent = params.name;
-            document.getElementById('customerEmail').textContent = params.email;
-            document.getElementById('orderRef').textContent = params.reference;
-            document.getElementById('totalAmount').textContent = `GH₵${parseInt(params.amount / 100).toLocaleString()}`;
-            
-            // Store params globally
-            window.paymentParams = params;
-        }
-
-        // Show loading state
-        function showLoading() {
-            document.getElementById('payButton').style.display = 'none';
-            document.getElementById('loadingMessage').style.display = 'block';
-        }
-
-        // Hide loading state
-        function hideLoading() {
-            document.getElementById('payButton').style.display = 'block';
-            document.getElementById('loadingMessage').style.display = 'none';
-        }
-
-        // Show success message
-        function showSuccess() {
-            hideLoading();
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('payButton').style.display = 'none';
-        }
-
-        // Show error message
-        function showError(message) {
-            hideLoading();
-            document.getElementById('errorMessage').style.display = 'block';
-            document.getElementById('errorText').textContent = message;
-        }
-
-        // Initiate Paystack payment
-        function initiatePayment() {
-            const params = window.paymentParams;
-            
-            if (!params) {
-                showError('Payment parameters not loaded. Please refresh and try again.');
-                return;
-            }
-
-            showLoading();
-
-            // Initialize Paystack payment
-            const handler = PaystackPop.setup({
-                key: 'pk_test_377d9052e929868450af2ed6dfd2bd2e7805010e',
-                email: params.email,
-                amount: parseInt(params.amount), // Amount in pesewas
-                currency: 'GHS',
-                ref: params.reference,
-                metadata: {
-                    custom_fields: [
-                        {
-                            display_name: "Customer Name",
-                            variable_name: "customer_name",
-                            value: params.name
-                        }
-                    ]
-                },
-                callback: function(response) {
-                    // Payment successful
-                    console.log('Payment successful:', response);
-                    showSuccess();
-                    
-                    // Notify parent window (FlutterFlow WebView)
-                    if (window.parent && window.parent.postMessage) {
-                        window.parent.postMessage({
-                            type: 'PAYMENT_SUCCESS',
-                            reference: response.reference,
-                            status: 'success'
-                        }, '*');
-                    }
-                },
-                onClose: function() {
-                    // Payment cancelled or closed
-                    hideLoading();
-                    
-                    // Notify parent window
-                    if (window.parent && window.parent.postMessage) {
-                        window.parent.postMessage({
-                            type: 'PAYMENT_CANCELLED',
-                            reference: params.reference,
-                            status: 'cancelled'
-                        }, '*');
-                    }
-                }
-            });
-
-            // Open payment modal
-            handler.openIframe();
-        }
-
-        // Initialize page when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initializePage);
-
-        // Handle messages from parent window (optional)
-        window.addEventListener('message', function(event) {
-            if (event.data && event.data.type === 'INIT_PAYMENT') {
-                initiatePayment();
-            }
+            setTimeout(() => {
+                container.style.transition = 'all 0.8s ease-out';
+                container.style.transform = 'translateY(0)';
+                container.style.opacity = '1';
+            }, 100);
         });
+
+        // Simulate completion after 10 seconds (for demo purposes)
+        setTimeout(() => {
+            statusElement.textContent = "Payment verified successfully!";
+            statusElement.style.color = "#00C896";
+            
+            // You can redirect or show success message here
+            // window.location.href = '/success';
+        }, 10000);
     </script>
 </body>
 </html>
