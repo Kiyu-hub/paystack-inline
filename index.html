@@ -19,17 +19,18 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            padding: 10px;
         }
 
         .verification-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 60px 40px;
+            border-radius: clamp(16px, 4vw, 24px);
+            padding: clamp(30px, 8vw, 60px) clamp(20px, 6vw, 40px);
             text-align: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            max-width: 480px;
-            width: 90%;
+            max-width: min(480px, 95vw);
+            width: 100%;
             position: relative;
             overflow: hidden;
         }
@@ -52,9 +53,9 @@
         }
 
         .paystack-logo {
-            width: 180px;
+            width: clamp(120px, 30vw, 180px);
             height: auto;
-            margin-bottom: 40px;
+            margin-bottom: clamp(20px, 5vw, 40px);
             animation: logoFloat 3s ease-in-out infinite;
         }
 
@@ -64,9 +65,9 @@
         }
 
         .verification-icon {
-            width: 120px;
-            height: 120px;
-            margin: 20px auto 30px;
+            width: clamp(80px, 20vw, 120px);
+            height: clamp(80px, 20vw, 120px);
+            margin: clamp(15px, 4vw, 20px) auto clamp(20px, 5vw, 30px);
             position: relative;
         }
 
@@ -87,8 +88,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
+            width: clamp(28px, 7vw, 40px);
+            height: clamp(28px, 7vw, 40px);
         }
 
         .checkmark {
@@ -105,18 +106,19 @@
         }
 
         .verification-title {
-            font-size: 28px;
+            font-size: clamp(20px, 6vw, 28px);
             font-weight: 700;
             color: #2d3748;
-            margin-bottom: 16px;
+            margin-bottom: clamp(12px, 3vw, 16px);
             animation: fadeInUp 0.8s ease-out;
+            line-height: 1.2;
         }
 
         .verification-subtitle {
-            font-size: 16px;
+            font-size: clamp(14px, 3.5vw, 16px);
             color: #718096;
             line-height: 1.6;
-            margin-bottom: 40px;
+            margin-bottom: clamp(25px, 6vw, 40px);
             animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
@@ -135,13 +137,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 30px;
+            gap: clamp(6px, 2vw, 8px);
+            margin-bottom: clamp(20px, 5vw, 30px);
         }
 
         .dot {
-            width: 12px;
-            height: 12px;
+            width: clamp(10px, 2.5vw, 12px);
+            height: clamp(10px, 2.5vw, 12px);
             border-radius: 50%;
             background: #00C896;
             animation: dotPulse 1.4s ease-in-out infinite;
@@ -163,28 +165,28 @@
         }
 
         .status-text {
-            font-size: 14px;
+            font-size: clamp(12px, 3vw, 14px);
             color: #4a5568;
-            margin-bottom: 20px;
+            margin-bottom: clamp(15px, 4vw, 20px);
             animation: fadeInUp 0.8s ease-out 0.4s both;
         }
 
         .security-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: clamp(6px, 2vw, 8px);
             background: rgba(0, 200, 150, 0.1);
             color: #00C896;
-            padding: 12px 20px;
+            padding: clamp(8px, 2.5vw, 12px) clamp(15px, 4vw, 20px);
             border-radius: 50px;
-            font-size: 14px;
+            font-size: clamp(12px, 3vw, 14px);
             font-weight: 600;
             animation: fadeInUp 0.8s ease-out 0.6s both;
         }
 
         .lock-icon {
-            width: 16px;
-            height: 16px;
+            width: clamp(14px, 3.5vw, 16px);
+            height: clamp(14px, 3.5vw, 16px);
             fill: currentColor;
         }
 
@@ -200,8 +202,8 @@
 
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: clamp(3px, 1vw, 4px);
+            height: clamp(3px, 1vw, 4px);
             background: rgba(0, 200, 150, 0.3);
             border-radius: 50%;
             animation: floatUp 8s ease-in-out infinite;
@@ -237,23 +239,147 @@
             }
         }
 
-        @media (max-width: 480px) {
+        /* Mobile Portrait */
+        @media (max-width: 480px) and (orientation: portrait) {
+            body {
+                padding: 15px 10px;
+            }
+            
             .verification-container {
-                padding: 40px 24px;
-                margin: 20px;
+                min-height: auto;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+        }
+
+        /* Mobile Landscape */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                padding: 10px 15px;
+            }
+            
+            .verification-container {
+                max-height: 85vh;
+                overflow-y: auto;
+                padding: clamp(20px, 4vh, 40px) clamp(25px, 5vw, 35px);
             }
             
             .paystack-logo {
-                width: 150px;
-            }
-            
-            .verification-title {
-                font-size: 24px;
+                margin-bottom: clamp(15px, 3vh, 25px);
             }
             
             .verification-icon {
-                width: 100px;
-                height: 100px;
+                margin: clamp(10px, 2vh, 15px) auto clamp(15px, 3vh, 20px);
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media (max-width: 320px) {
+            .verification-container {
+                padding: 25px 15px;
+                border-radius: 16px;
+            }
+            
+            .verification-subtitle {
+                font-size: 13px;
+            }
+            
+            .security-badge {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+
+        /* Large Mobile/Small Tablet */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .verification-container {
+                max-width: min(420px, 85vw);
+                padding: clamp(35px, 6vw, 50px) clamp(25px, 5vw, 35px);
+            }
+        }
+
+        /* Tablet */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .verification-container {
+                max-width: min(480px, 70vw);
+                padding: clamp(45px, 6vw, 60px) clamp(30px, 5vw, 40px);
+            }
+        }
+
+        /* Desktop */
+        @media (min-width: 1025px) {
+            .verification-container {
+                max-width: 480px;
+                padding: 60px 40px;
+            }
+        }
+
+        /* High DPI Displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .paystack-logo {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .paystack-logo,
+            .shield-icon,
+            .dot,
+            .particle {
+                animation: none;
+            }
+            
+            .verification-container::before {
+                animation: none;
+                background: #00C896;
+            }
+            
+            .checkmark {
+                animation: none;
+                stroke-dasharray: 50, 0;
+            }
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            .verification-container {
+                background: rgba(255, 255, 255, 1);
+                border: 2px solid #000;
+            }
+            
+            .verification-title {
+                color: #000;
+            }
+            
+            .verification-subtitle,
+            .status-text {
+                color: #333;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            }
+            
+            .verification-container {
+                background: rgba(26, 32, 44, 0.95);
+                color: #e2e8f0;
+            }
+            
+            .verification-title {
+                color: #e2e8f0;
+            }
+            
+            .verification-subtitle {
+                color: #a0aec0;
+            }
+            
+            .status-text {
+                color: #cbd5e0;
             }
         }
     </style>
@@ -279,7 +405,7 @@
                 <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11.5C15.4,11.5 16,12.4 16,13V16C16,17.4 15.4,18 14.8,18H9.2C8.6,18 8,17.4 8,16V13C8,12.4 8.6,11.5 9.2,11.5V10C9.2,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,10V11.5H13.5V10C13.5,8.7 12.8,8.2 12,8.2Z"/>
             </svg>
             <div class="checkmark-circle">
-                <svg width="40" height="40" viewBox="0 0 40 40">
+                <svg width="100%" height="100%" viewBox="0 0 40 40">
                     <path class="checkmark" d="M10 20 L16 26 L30 12"/>
                 </svg>
             </div>
@@ -350,6 +476,18 @@
             // You can redirect or show success message here
             // window.location.href = '/success';
         }, 10000);
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }, 100);
+        });
+
+        // Set initial viewport height
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
     </script>
 </body>
 </html>
